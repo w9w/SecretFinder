@@ -543,7 +543,7 @@ def html_save(output):
 def cli_output(matched):
     ''' cli output '''
     for match in matched:
-        print(match.get('name') + '\t->\t' + match.get('matched').encode('ascii', 'ignore').decode('utf-8'))
+        print('[ + ] URL: ' + url + '\n' + match.get('name') + '\t->\t' + match.get('matched').encode('ascii', 'ignore').decode('utf-8'))
 
 
 def urlParser(url):
@@ -694,7 +694,6 @@ if __name__ == "__main__":
     # conver URLs to js file
     output = ''
     for url in urls:
-        print('[ + ] URL: ' + url)
         if not args.burp:
             file = send_request(url)
         else:
