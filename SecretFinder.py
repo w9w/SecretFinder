@@ -38,7 +38,7 @@ from urllib.parse import urlparse
 _regex = {
     'google_api': r'AIza[0-9A-Za-z-_]{35}',
     'firebase': r'AAAA[A-Za-z0-9_-]{7}:[A-Za-z0-9_-]{140}',
-    'google_captcha': r'6L[0-9A-Za-z-_]{38}|^6[0-9a-zA-Z_-]{39}$',
+    ##'google_captcha': r'6L[0-9A-Za-z-_]{38}|^6[0-9a-zA-Z_-]{39}$',
     'google_oauth': r'ya29\.[0-9A-Za-z\-_]+',
     'amazon_aws_access_key_id': r'AKIA[0-9A-Z]{16}',
     'amazon_mws_auth_toke': r'amzn\\.mws\\.[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}',
@@ -55,8 +55,8 @@ _regex = {
     'authorization_api': r'api[key|_key|\s+]+[a-zA-Z0-9_\-]{5,100}',
     'mailgun_api_key': r'key-[0-9a-zA-Z]{32}',
     'twilio_api_key': r'SK[0-9a-fA-F]{32}',
-    'twilio_account_sid': r'AC[a-zA-Z0-9_\-]{32}',
-    'twilio_app_sid': r'AP[a-zA-Z0-9_\-]{32}',
+    ##'twilio_account_sid': r'AC[a-zA-Z0-9_\-]{32}',
+    ##'twilio_app_sid': r'AP[a-zA-Z0-9_\-]{32}',
     'paypal_braintree_access_token': r'access_token\$production\$[0-9a-z]{16}\$[0-9a-f]{32}',
     'square_oauth_secret': r'sq0csp-[ 0-9A-Za-z\-_]{43}|sq0[a-z]{3}-[0-9A-Za-z\-_]{22,43}',
     'square_access_token': r'sqOatp-[0-9A-Za-z\-_]{22}|EAAA[a-zA-Z0-9]{60}',
@@ -66,16 +66,17 @@ _regex = {
     'rsa_private_key': r'-----BEGIN RSA PRIVATE KEY-----',
     'ssh_dsa_private_key': r'-----BEGIN DSA PRIVATE KEY-----',
     'ssh_dc_private_key': r'-----BEGIN EC PRIVATE KEY-----',
+    'email': r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,6}\b',
     'pgp_private_block': r'-----BEGIN PGP PRIVATE KEY BLOCK-----',
     'json_web_token': r'ey[A-Za-z0-9-_=]+\.[A-Za-z0-9-_=]+\.?[A-Za-z0-9-_.+/=]*$',
     'slack_token': r"\"api_token\":\"(xox[a-zA-Z]-[a-zA-Z0-9-]+)\"",
     'SSH_privKey': r"([-]+BEGIN [^\s]+ PRIVATE KEY[-]+[\s]*[^-]*[-]+END [^\s]+ PRIVATE KEY[-]+)",
     'possible_Creds': r"(?i)(" \
-                      r"password\s*[`=:\"]+\s*[^\s]+|" \
-                      r"password is\s*[`=:\"]*\s*[^\s]+|" \
-                      r"pwd\s*[`=:\"]*\s*[^\s]+|" \
-                      r"passwd\s*[`=:\"]+\s*[^\s]+)",
-    'firebase_secrets': r'[a-z0-9.-]+\.firebaseio\.com',
+                      r"password\s*[`=:\"]+\s*[^\s]+|(.*?)" \
+                      r"password is\s*[`=:\"]*\s*[^\s]+|(.*?)" \
+                      r"pwd\s*[`=:\"]*\s*[^\s]+|(.*?)" \
+                      r"passwd\s*[`=:\"]+\s*[^\s]+)(.*?)",
+    'firebase_secrets': r'[a-z0-9.-]+\.firebaseio\.com(.*?)',
     'facebook-token_secrets': r'EAACEdEose0cBA[0-9A-Za-z]+',
     'facebook-oauth_secrets': r'facebook.*[\'|\"][0-9a-f]{32}[\'|\"]',
     'google-service-account_secrets': r'\"type\": \"service_account\"',
@@ -94,9 +95,10 @@ _regex = {
     'square-keys_secrets' : r'rsq0csp-[0-9A-Za-z\\-\\_]{43}',
     'twitter-oauth_secrets' : r'twitter.*[\'|\"][0-9a-zA-Z]{35,44}[\'|\"]',
     'miscellanious' : r'(aws_access|aws_secret|api[_-]?key|ListBucketResult|S3_ACCESS_KEY|Authorization:|RSA PRIVATE|Index of|aws_|secret|ssh-rsa AA)',
-    'ip_address' : r'(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])',
+    'ip_address' : r'\b((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(\.|$)){4}\\b',
+    'credit-card': r'^((4\d{3})|(5[1-5]\d{2})|(6011))-?\d{4}-?\d{4}-?\d{4}|3[4,7]\d{13}$',
     'another_secret' : r'access_key',
-	    'another_secret' : r'access_token',
+    'another_secret' : r'access_token',
     'another_secret' : r'accessKey',
     'another_secret' : r'accessToken',
     'another_secret' : r'account_sid',
@@ -213,7 +215,6 @@ _regex = {
     'another_secret' : r'oauth_key',
     'another_secret' : r'oauth_token',
     'another_secret' : r'oauth2_secret',
-    'another_secret' : r'password',
     'another_secret' : r'paypal_identity_token',
     'another_secret' : r'paypal_sandbox',
     'another_secret' : r'paypal_secret',
@@ -234,11 +235,6 @@ _regex = {
     'another_secret' : r'root_password',
     'another_secret' : r'sa_password',
     'another_secret' : r'secret',
-    'another_secret' : r'secret_access_key',
-    'another_secret' : r'secret_bearer',
-    'another_secret' : r'secret_key',
-    'another_secret' : r'secret_token',
-    'another_secret' : r'secretKey',
     'another_secret' : r'security_credentials',
     'another_secret' : r'send_keys',
     'another_secret' : r'sentry_dsn',
@@ -329,7 +325,7 @@ _regex = {
     'another_secret' : r'zendesk_token',
     'another_secret' : r'zendesk_url',
     'another_secret' : r'zendesk_username',
-    'another_secret' : r'zendesk_password',
+    'another_secret' : r'zendesk_password'
 }
 
 _template = '''
